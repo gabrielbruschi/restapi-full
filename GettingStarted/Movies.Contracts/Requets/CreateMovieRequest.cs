@@ -1,6 +1,6 @@
 namespace Movies.Contracts.Requests;
 
-public class CreateMovieRequets
+public class CreateMovieRequet
 {
     public required string Title { get; init; }
     
