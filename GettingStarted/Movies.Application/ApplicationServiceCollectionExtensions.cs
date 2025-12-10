@@ -1,6 +1,7 @@
 using Movies.Application.Repositories;
 using Movies.Application.Database;
 using Movies.Application.Services;
+using FluentValidation;
 
 namespace Movies.Application;
 
@@ -10,6 +11,7 @@ public static class ApplicationServiceCollectionExtensions
 	{
 		services.AddSingleton<IMovieRepository, MovieRepository>();
 		services.AddSingleton<IMovieService, MovieService>();
+		services.AddValidatorsFromAssemblyContaining<IApplicationMarker>(ServiceLifetime.Singleton);
 		return services;
 	}
 
