@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Movies.Contracts.Requests;
-using Movies.API.Mapping;
+using Movies.API;
 using Movies.API.ApiEndpoints;
+using Movies.API.Mapping;
 using Movies.Application.Services;
+using Movies.Contracts.Requests;
 
 namespace Movies.Api.Controllers;
 
@@ -14,8 +16,9 @@ public class MoviesController : ControllerBase
     public MoviesController(IMovieService movieService)
     {
         _movieService = movieService;
-    } 
+    }
 
+    [Authorize(AuthConstants.AdminUserPolicyName)]
     [HttpPost(ApiEndpoints.Movies.Create)]
     public async Task<IActionResult> Create([FromBody]CreateMovieRequet request,
         CancellationToken token)
@@ -26,6 +29,7 @@ public class MoviesController : ControllerBase
         //return Created($"/{ApiEndpoints.Movies.Create}/{movie.Id}", movie);
     }
 
+    [AllowAnonymous]
     [HttpGet(ApiEndpoints.Movies.Get)]
     public async Task<IActionResult> Get([FromRoute] string idOrSlug,
         CancellationToken token)
@@ -42,6 +46,7 @@ public class MoviesController : ControllerBase
         return Ok(response);
     }
 
+    [AllowAnonymous]
     [HttpGet(ApiEndpoints.Movies.GetAll)]
     public async Task<IActionResult> GetAll(CancellationToken token = default)
     {
@@ -51,9 +56,10 @@ public class MoviesController : ControllerBase
         return Ok(moviesResponse);
     }
 
+    [Authorize(AuthConstants.TruestMemberPolicyName)]
     [HttpPut(ApiEndpoints.Movies.Update)]
     public async Task<IActionResult> Update([FromRoute] Guid id,
-        [FromBody]UpdateMovieRequest request,
+        [FromBody]UpdateMovieRequest  request,
         CancellationToken token)
     {
         var movie = request.MapToMovie(id);
@@ -65,6 +71,7 @@ public class MoviesController : ControllerBase
         return Ok(response);    
     }
 
+    [Authorize(AuthConstants.TruestMemberPolicyName)]
     [HttpDelete(ApiEndpoints.Movies.Delete)]
     public async Task<IActionResult> Delete([FromRoute] Guid id,
         CancellationToken token)
